@@ -1,0 +1,48 @@
+{{ ansible_managed | comment }}
+
+# Include /etc/ssh/sshd_config.d/*.conf
+
+Port 22
+#AddressFamily any
+ListenAddress 0.0.0.0
+#ListenAddress ::
+
+HostKey /etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_rsa_key
+
+SyslogFacility AUTH
+LogLevel INFO
+
+AllowGroups ssh
+
+LoginGraceTime 2m
+PermitRootLogin no
+
+PubkeyAuthentication yes
+
+PasswordAuthentication no
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+UsePAM yes
+
+AllowAgentForwarding yes
+AllowTcpForwarding yes
+X11Forwarding yes
+PermitTTY yes
+PrintMotd no
+PrintLastLog yes
+TCPKeepAlive yes
+PermitUserEnvironment no
+Compression delayed
+ClientAliveInterval 0
+ClientAliveCountMax 3
+PidFile /var/run/sshd.pid
+MaxStartups 10:30:100
+#ChrootDirectory none
+
+# gpg-agent
+StreamLocalBindUnlink yes
+
+AcceptEnv LANG LC_*
+Subsystem	sftp	/usr/libexec/openssh/sftp-server

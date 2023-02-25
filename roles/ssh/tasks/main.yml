@@ -1,0 +1,21 @@
+---
+- name: group ssh
+  group:
+    name: ssh
+    state: present
+
+- name: admin user group ssh
+  user:
+    name: xantara
+    groups: ssh
+    append: yes
+
+- name: /etc/ssh/sshd_config
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: '0660'
+  notify:
+    - restart sshd

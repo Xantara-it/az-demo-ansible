@@ -4,8 +4,10 @@ Demo CheckMK site in Azure with Ansible.
 
 ## Ansible check
 
+Save `id_rsa` in the current working directory.
+
 ```console
-$ ansible --private-key ../az-demo-terraform/id_rsa -m ping all
+$ ansible -m ping all
 demo.xantara-it.nl | SUCCESS => {
     "changed": false,
     "ping": "pong"

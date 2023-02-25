@@ -1,0 +1,27 @@
+---
+- hosts: all
+  tags: always
+  become: true
+
+  # Update repository
+  pre_tasks:
+    - name: update/upgrade package cache
+      tags: always
+      dnf:
+        name: "*"
+        state: latest
+        update_cache: true
+      changed_when: false
+      when: ansible_distribution == "RedHat"
+
+  # Clean/Purge repository
+  post_tasks:
+    - name: cleanup package cache
+      tags: always
+      dnf:
+        autoremove: true
+      changed_when: false
+      when: ansible_distribution == "RedHat"
+
+  roles:
+    - ssh
