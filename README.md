@@ -7,9 +7,10 @@ Demo CheckMK site in Azure with Ansible.
 Save `id_rsa` in the current working directory.
 
 ```console
-$ ansible -m ping all
+$ ansible --private-key id_rsa -m ping all
 demo.xantara-it.nl | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
 ```
+

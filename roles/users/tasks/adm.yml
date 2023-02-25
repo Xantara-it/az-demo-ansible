@@ -1,0 +1,19 @@
+---
+- name: adm - group
+  group:
+    name: adm
+    state: present
+
+- name: adm - user xantara
+  user:
+    name: xantara
+    groups: adm
+    append: yes
+
+- name: adm - /etc/sudoers.d/adm
+  template:
+    src: sudo_adm.j2
+    dest: /etc/sudoers.d/adm
+    owner: root
+    group: root
+    mode: '0660'

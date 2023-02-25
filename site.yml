@@ -25,3 +25,5 @@
 
   roles:
     - ssh
+    - users
+
