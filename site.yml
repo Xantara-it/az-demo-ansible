@@ -24,6 +24,7 @@
       when: ansible_distribution == "RedHat"
 
   roles:
+    - config
     - ssh
     - users
 

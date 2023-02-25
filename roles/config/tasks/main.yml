@@ -1,0 +1,4 @@
+---
+- name: timezone
+  timezone:
+    name: Europe/Amsterdam

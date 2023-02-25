@@ -19,3 +19,10 @@
     mode: '0660'
   notify:
     - restart sshd
+
+- name: add ssh to firewall
+  firewalld:
+    port: "22/tcp"
+    state: enabled
+    immediate: true
+    permanent: true

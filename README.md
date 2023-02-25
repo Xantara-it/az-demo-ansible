@@ -13,4 +13,3 @@ demo.xantara-it.nl | SUCCESS => {
     "ping": "pong"
 }
 ```
-
