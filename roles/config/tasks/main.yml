@@ -1,4 +1,31 @@
 ---
+#
+# Hostname
+#
+- name: hostname {{ inventory_hostname }}
+  hostname:
+    name: "{{ inventory_hostname }}"
+  when: ansible_fqdn != ansible_ssh_host
+
+- name: /etc/hostname
+  copy:
+    content: "{{ inventory_hostname }}"
+    dest: /etc/hostname
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: /etc/hosts
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: '0644'
+
+#
+# Timezone
+#
 - name: timezone
   timezone:
     name: Europe/Amsterdam
