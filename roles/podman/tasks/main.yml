@@ -1,0 +1,31 @@
+---
+- name: package podman
+  package:
+    name: podman
+    state: present
+
+# ToDo: check ik this is needed
+- name: /etc/containers/registries.conf
+  template:
+    src: registries.conf.j2
+    dest: /etc/containers/registries.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: pull image postgres:15.2
+  containers.podman.podman_image:
+    name: postgres:15.2
+
+# ToDo: encrypt password
+- name: PostgreSQL container
+  containers.podman.podman_container:
+    name: postgres
+    image: postgres:15.2
+    state: started
+    shm_size: 256m
+    rm : true
+    ports:
+      - 5432:5432
+    env:
+      POSTGRES_PASSWORD: geheim
