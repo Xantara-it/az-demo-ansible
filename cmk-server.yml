@@ -2,12 +2,20 @@
 - name: "Provision CheckMK server"
   hosts: checkmk-server
   become: true
+  tasks:
+    - ansible.builtin.slurp:
+        src: "/opt/omd/sites/{{ checkmk_site }}/var/check_mk/web/automation/automation.secret"
+      register: secret
+      tags: [always]
+    - import_tasks: cmk-postgres.yaml
+      tags: [postgres]
   roles:
     - tribe29.checkmk.server
   tags:
     - server
   vars:
     checkmk_admin_password: cmkadmin
+    checkmk_agent_secret: "{{ secret['content'] | b64decode | trim }}"
     checkmk_server_edition: "{{ checkmk_edition }}"
     checkmk_server_version: "{{ checkmk_version }}"
     checkmk_server_sites:
@@ -15,6 +23,7 @@
         admin_pw: "{{ checkmk_admin_password }}"
         version: "{{ checkmk_server_version }}"
         state: started
+    checkmk_server_url: http://127.0.0.1/
 
 - name: "Provision CheckMK agent"
   hosts: checkmk-agent
@@ -23,6 +32,7 @@
     - ansible.builtin.slurp:
         src: "/opt/omd/sites/{{ checkmk_agent_site }}/var/check_mk/web/automation/automation.secret"
       register: secret
+      tags: [always]
   roles:
     - tribe29.checkmk.agent
   tags:

@@ -2,3 +2,10 @@
 all:
   hosts:
     demo.xantara-it.nl:
+  children:
+    checkmk-server:
+      hosts:
+        demo.xantara-it.nl:
+    checkmk-agent:
+      hosts:
+        demo.xantara-it.nl:

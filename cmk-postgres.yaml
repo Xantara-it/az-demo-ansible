@@ -1,0 +1,40 @@
+---
+- name: "Agent - Create rules."
+  tribe29.checkmk.rule:
+    server_url: "{{ checkmk_server_url }}"
+    site: "{{ checkmk_site }}"
+    automation_user: automation
+    automation_secret: "{{ checkmk_agent_secret }}"
+    ruleset: agent_config:mk_postgres
+    rule:
+      conditions:
+        host_labels: []
+        host_tags: []
+        service_labels: []
+      properties:
+        comment: ""
+        description: ""
+        disabled: false
+        documentation_url: http://nonexistent.nl
+      value_raw: "{}"
+    state: present
+  run_once: true
+- name: "Agent - Activate rules."
+  tribe29.checkmk.activation:
+    server_url: "{{ checkmk_server_url }}"
+    site: "{{ checkmk_site }}"
+    automation_user: automation
+    automation_secret: "{{ checkmk_agent_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ checkmk_site }}"
+  run_once: true
+- name: "Agent - Bake"
+  bake:
+    server_url: "{{ checkmk_server_url }}"
+    site: "{{ checkmk_site }}"
+    automation_user: automation
+    automation_secret: "{{ checkmk_agent_secret }}"
+    sites:
+      - "{{ checkmk_site }}"
+  run_once: true
