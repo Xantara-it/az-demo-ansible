@@ -1,0 +1,28 @@
+- package:
+    name: mod_ssl
+    state: present
+
+
+- block:
+    - community.crypto.openssl_privatekey:
+        path: "{{ account_privkey_le }}"
+    - community.crypto.acme_account:
+        state: present
+        account_key_src: "{{ account_privkey_le }}"
+        acme_directory: "{{ account_dir_url }}"
+        acme_version: 2
+        terms_agreed: true
+        contact:
+        - "mailto:{{ account_email }}"
+    - import_tasks: domain.yml
+    - ansible.builtin.template:
+        src: ssl.conf.j2
+        dest: /etc/httpd/conf.d/ssl.conf
+  vars:
+    account_email: gerlof.fokkema@xantara-it.nl
+    account_dir_url: "{{ acme_dir['prod'] }}"
+    account_privkey_le: /etc/pki/tls/private/letsencrypt.key
+    account_privkey_csr: /etc/pki/tls/private/{{ domain }}.key
+    account_pubkey_csr: /etc/pki/tls/certs/{{ domain }}.crt
+    account_fullchain: /etc/pki/tls/certs/{{ domain }}.chain.crt
+    wwwroot: /var/www/html

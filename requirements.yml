@@ -2,3 +2,4 @@
 collections:
   - name: tribe29.checkmk
     version: ">=0.17.1"
+  - name: community.crypto

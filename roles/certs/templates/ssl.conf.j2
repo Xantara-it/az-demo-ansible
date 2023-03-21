@@ -1,0 +1,30 @@
+Listen 443 https
+
+SSLPassPhraseDialog exec:/usr/libexec/httpd-ssl-pass-dialog
+
+SSLSessionCache         shmcb:/run/httpd/sslcache(512000)
+SSLSessionCacheTimeout  300
+SSLCryptoDevice builtin
+
+<VirtualHost _default_:443>
+    SSLEngine on
+    SSLHonorCipherOrder on
+    SSLCipherSuite PROFILE=SYSTEM
+    SSLProxyCipherSuite PROFILE=SYSTEM
+    SSLCertificateFile {{ account_pubkey_csr }}
+    SSLCertificateKeyFile {{ account_privkey_csr }}
+
+    <Directory "/var/www/cgi-bin">
+        SSLOptions +StdEnvVars
+    </Directory> 
+    <FilesMatch "\.(cgi|shtml|phtml|php)$">
+        SSLOptions +StdEnvVars
+    </FilesMatch>
+
+    BrowserMatch "MSIE [2-5]" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0
+
+    CustomLog logs/ssl_request_log "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+    ErrorLog logs/ssl_error_log
+    TransferLog logs/ssl_access_log
+    LogLevel warn
+</VirtualHost>

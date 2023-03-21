@@ -1,0 +1,3 @@
+acme_dir:
+  staging: https://acme-staging-v02.api.letsencrypt.org/directory
+  prod: https://acme-v02.api.letsencrypt.org/directory

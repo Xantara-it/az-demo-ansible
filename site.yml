@@ -25,7 +25,10 @@
 
   roles:
     - config
+    - certs
     - ssh
     - users
     - podman
 
+  vars:
+    domain: demo.xantara-it.nl
