@@ -1,0 +1,30 @@
+user_connections += [
+{% for id, conn in checkmk_conns.items() %}
+{{ '{' }}
+  'id': '{{ id }}',
+  'name': '{{ id }}',
+  'type': 'saml2',
+  'version': '1.0.0',
+  'owned_by_site': '{{ checkmk_site }}',
+
+  'description': '',
+  'comment': '',
+  'docu_url': '',
+  'disabled': False,
+  'checkmk_entity_id': '{{ checkmk_saml_meta }}',
+  'checkmk_metadata_endpoint': '{{ checkmk_saml_entity }}/',
+  'checkmk_assertion_consumer_service_endpoint': '{{ checkmk_saml_acs }}',
+  'idp_metadata': (
+    'file', ('{{ conn.idp }}', 'text/xml', b'''{{ lookup('ansible.builtin.file', conn.idp) }}''')
+  ),
+  'checkmk_server_url': '{{ checkmk_server_url }}',
+  'connection_timeout': (12, 12),
+  'user_id_attribute_name': 'user_id',
+  'user_alias_attribute_name': '',
+  'email_attribute_name': '',
+  'contactgroups_attribute_name': '',
+  'role_membership_mapping': False,
+  'signature_certificate': 'builtin'
+{{ '}' }},
+{% endfor %}
+]

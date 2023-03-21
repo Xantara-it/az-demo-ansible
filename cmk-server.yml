@@ -7,15 +7,38 @@
         src: "/opt/omd/sites/{{ checkmk_site }}/var/check_mk/web/automation/automation.secret"
       register: secret
       tags: [always]
+    - block:
+        - ansible.builtin.file:
+            state: directory
+            dest: "{{ checkmk_wato }}"
+            owner: "{{ checkmk_site }}"
+            group: "{{ checkmk_site }}"
+        - ansible.builtin.template:
+            src: user_connections.mk.j2
+            dest: "{{ checkmk_wato }}/user_connections.mk"
+            owner: "{{ checkmk_site }}"
+            group: "{{ checkmk_site }}"
+      tags: [checkmk.saml]
+      vars:
+        checkmk_conns:
+          google-fokkema:
+            idp: metadata.xml
+        checkmk_wato: "/opt/omd/sites/{{ checkmk_site }}/etc/check_mk/multisite.d/wato"
+        checkmk_server_url: "https://{{ ansible_hostname }}/{{ checkmk_site }}"
+        checkmk_saml_base: "{{ checkmk_server_url }}/{{ checkmk_site }}/check_mk"
+        checkmk_saml_acs: "{{ checkmk_saml_base }}/saml_acs.py?acs"
+        checkmk_saml_entity: "{{ checkmk_saml_base }}/saml_metadata.py"
+        checkmk_saml_meta: "{{ checkmk_saml_base }}/saml_metadata.py?RelayState=google-fokkema"
     - import_tasks: cmk-postgres.yaml
       tags: [postgres]
+      vars:
+        checkmk_agent_secret: "{{ secret['content'] | b64decode | trim }}"
   roles:
     - tribe29.checkmk.server
   tags:
     - server
   vars:
     checkmk_admin_password: cmkadmin
-    checkmk_agent_secret: "{{ secret['content'] | b64decode | trim }}"
     checkmk_server_edition: "{{ checkmk_edition }}"
     checkmk_server_version: "{{ checkmk_version }}"
     checkmk_server_sites:
