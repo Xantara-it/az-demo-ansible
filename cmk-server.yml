@@ -8,6 +8,23 @@
       register: secret
       tags: [always]
     - block:
+        - ansible.builtin.copy:
+            content: |
+              from cmk.gui.cee.userdb.saml2.config import write_certificate_files
+              from cmk.gui.utils.script_helpers import gui_context
+              import sys
+
+              def main(certificate='builtin', connection_id='google-fokkema', *args):
+                  with gui_context():
+                      write_certificate_files(certificate, connection_id)
+
+              main(*sys.argv[1:])
+            dest: /tmp/cert.py
+        - ansible.builtin.command: ~/bin/python3 /tmp/cert.py
+          become: yes
+          become_method: su
+          become_exe: sudo su -
+          become_user: "{{ checkmk_site }}"
         - ansible.builtin.file:
             state: directory
             dest: "{{ checkmk_wato }}"
@@ -23,12 +40,13 @@
         checkmk_conns:
           google-fokkema:
             idp: metadata.xml
-        checkmk_wato: "/opt/omd/sites/{{ checkmk_site }}/etc/check_mk/multisite.d/wato"
-        checkmk_server_url: "https://{{ ansible_hostname }}/{{ checkmk_site }}"
+        checkmk_domain: demo.xantara-it.nl
+        checkmk_server_url: "https://{{ checkmk_domain }}"
         checkmk_saml_base: "{{ checkmk_server_url }}/{{ checkmk_site }}/check_mk"
         checkmk_saml_acs: "{{ checkmk_saml_base }}/saml_acs.py?acs"
         checkmk_saml_entity: "{{ checkmk_saml_base }}/saml_metadata.py"
         checkmk_saml_meta: "{{ checkmk_saml_base }}/saml_metadata.py?RelayState=google-fokkema"
+        checkmk_wato: "/opt/omd/sites/{{ checkmk_site }}/etc/check_mk/multisite.d/wato"
     - import_tasks: cmk-postgres.yaml
       tags: [postgres]
       vars:

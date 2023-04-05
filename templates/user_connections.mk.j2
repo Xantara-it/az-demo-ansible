@@ -12,7 +12,7 @@ user_connections += [
   'docu_url': '',
   'disabled': False,
   'checkmk_entity_id': '{{ checkmk_saml_meta }}',
-  'checkmk_metadata_endpoint': '{{ checkmk_saml_entity }}/',
+  'checkmk_metadata_endpoint': '{{ checkmk_saml_entity }}',
   'checkmk_assertion_consumer_service_endpoint': '{{ checkmk_saml_acs }}',
   'idp_metadata': (
     'file', ('{{ conn.idp }}', 'text/xml', b'''{{ lookup('ansible.builtin.file', conn.idp) }}''')
