@@ -2,6 +2,8 @@
 - name: "Provision CheckMK server"
   hosts: checkmk-server
   become: true
+  pre_tasks:
+    - ansible.builtin.command: yum update -y
   tasks:
     - ansible.builtin.slurp:
         src: "/opt/omd/sites/{{ checkmk_site }}/var/check_mk/web/automation/automation.secret"
@@ -44,8 +46,8 @@
         checkmk_server_url: "https://{{ checkmk_domain }}"
         checkmk_saml_base: "{{ checkmk_server_url }}/{{ checkmk_site }}/check_mk"
         checkmk_saml_acs: "{{ checkmk_saml_base }}/saml_acs.py?acs"
-        checkmk_saml_entity: "{{ checkmk_saml_base }}/saml_metadata.py"
-        checkmk_saml_meta: "{{ checkmk_saml_base }}/saml_metadata.py?RelayState=google-fokkema"
+        checkmk_saml_entity: "{{ checkmk_saml_base }}/saml_metadata.py?RelayState=google-fokkema"
+        checkmk_saml_meta: "{{ checkmk_saml_base }}/saml_metadata.py"
         checkmk_wato: "/opt/omd/sites/{{ checkmk_site }}/etc/check_mk/multisite.d/wato"
     - import_tasks: cmk-postgres.yaml
       tags: [postgres]
