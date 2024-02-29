@@ -3,12 +3,12 @@
 # Hostname
 #
 - name: hostname {{ inventory_hostname }}
-  hostname:
+  ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
   when: ansible_fqdn != ansible_ssh_host
 
 - name: /etc/hostname
-  copy:
+  ansible.builtin.copy:
     content: "{{ inventory_hostname }}"
     dest: /etc/hostname
     owner: root
@@ -16,7 +16,7 @@
     mode: '0644'
 
 - name: /etc/hosts
-  template:
+  ansible.builtin.template:
     src: hosts.j2
     dest: /etc/hosts
     owner: root
@@ -26,6 +26,6 @@
 #
 # Timezone
 #
-- name: timezone
+- name: community.general.timezone
   timezone:
     name: Europe/Amsterdam

@@ -1,0 +1,8 @@
+---
+- name: update/upgrade package cache
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+    update_cache: true
+  changed_when: false
+  when: ansible_distribution == "RedHat"
