@@ -1,3 +1,10 @@
 ---
+offline: false
+exclude_paths:
+  - .github/
 skip_list:
+  - key-order[task]
+  - name[casing]
   - name[missing]
+  - name[play]
+  - package-latest
