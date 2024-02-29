@@ -1,30 +1,36 @@
-Listen 443 https
-
-SSLPassPhraseDialog exec:/usr/libexec/httpd-ssl-pass-dialog
-
-SSLSessionCache         shmcb:/run/httpd/sslcache(512000)
-SSLSessionCacheTimeout  300
-SSLCryptoDevice builtin
+<VirtualHost _default_:80>
+    ServerName {{ cert }}
+{% for domain in domains %}
+    ServerAlias {{ domain }}
+{% endfor %}
+    RewriteEngine On
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
+</VirtualHost>
 
 <VirtualHost _default_:443>
+    ServerName {{ cert }}
+{% for domain in domains %}
+    ServerAlias {{ domain }}
+{% endfor %}
+
     SSLEngine on
     SSLHonorCipherOrder on
     SSLCipherSuite PROFILE=SYSTEM
     SSLProxyCipherSuite PROFILE=SYSTEM
-    SSLCertificateFile {{ account_pubkey_csr }}
-    SSLCertificateKeyFile {{ account_privkey_csr }}
+    SSLCertificateFile {{ cert_crt }}
+    SSLCertificateKeyFile {{ cert_key }}
 
     <Directory "/var/www/cgi-bin">
         SSLOptions +StdEnvVars
-    </Directory> 
+    </Directory>
     <FilesMatch "\.(cgi|shtml|phtml|php)$">
         SSLOptions +StdEnvVars
     </FilesMatch>
 
     BrowserMatch "MSIE [2-5]" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0
 
-    CustomLog logs/ssl_request_log "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
-    ErrorLog logs/ssl_error_log
-    TransferLog logs/ssl_access_log
+    CustomLog logs/ssl_{{ cert }}_request_log "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+    ErrorLog logs/ssl_{{ cert }}_error_log
+    TransferLog logs/ssl_{{ cert}}_access_log
     LogLevel warn
 </VirtualHost>

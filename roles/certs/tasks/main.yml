@@ -1,28 +1,21 @@
-- package:
-    name: mod_ssl
+- ansible.builtin.package:
+    name:
+      - acme-tiny
+      - mod_ssl
     state: present
+  notify: restart httpd
+- ansible.builtin.meta: flush_handlers
 
+- community.crypto.openssl_privatekey:
+    path: "{{ account_key }}"
 
-- block:
-    - community.crypto.openssl_privatekey:
-        path: "{{ account_privkey_le }}"
-    - community.crypto.acme_account:
-        state: present
-        account_key_src: "{{ account_privkey_le }}"
-        acme_directory: "{{ account_dir_url }}"
-        acme_version: 2
-        terms_agreed: true
-        contact:
-        - "mailto:{{ account_email }}"
-    - import_tasks: domain.yml
-    - ansible.builtin.template:
-        src: ssl.conf.j2
-        dest: /etc/httpd/conf.d/ssl.conf
+- ansible.builtin.include_tasks: cert.yml
+  with_dict: "{{ certs }}"
   vars:
-    account_email: gerlof.fokkema@xantara-it.nl
-    account_dir_url: "{{ acme_dir['prod'] }}"
-    account_privkey_le: /etc/pki/tls/private/letsencrypt.key
-    account_privkey_csr: /etc/pki/tls/private/{{ domain }}.key
-    account_pubkey_csr: /etc/pki/tls/certs/{{ domain }}.crt
-    account_fullchain: /etc/pki/tls/certs/{{ domain }}.chain.crt
-    wwwroot: /var/www/html
+    acme_dir: "{{ acme_dir_prod }}"
+    cert: "{{ item.key }}"
+    cert_key: /etc/pki/tls/private/{{ cert }}.key
+    cert_csr: /etc/pki/tls/certs/{{ cert }}.csr
+    cert_crt: /etc/pki/tls/certs/{{ cert }}.crt
+    domains: "{{ item.value }}"  # FIXME: support SANs
+- ansible.builtin.meta: flush_handlers

@@ -13,4 +13,5 @@
     - users
     - podman
   vars:
-    domain: demo.xantara-it.nl
+    certs:
+      demo.xantara-it.nl: []
