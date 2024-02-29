@@ -1,4 +1,4 @@
 acme_dir_staging: https://acme-staging-v02.api.letsencrypt.org/directory
 acme_dir_prod: https://acme-v02.api.letsencrypt.org/directory
-account_key: /etc/pki/tls/private/letsencrypt.key
-wwwroot: /var/www/challenges
+acme_account_key: /etc/pki/tls/private/letsencrypt.key
+acme_wwwroot: /var/www/challenges

@@ -7,7 +7,7 @@
 - ansible.builtin.meta: flush_handlers
 
 - community.crypto.openssl_privatekey:
-    path: "{{ account_key }}"
+    path: "{{ acme_account_key }}"
 
 - ansible.builtin.include_tasks: cert.yml
   with_dict: "{{ certs }}"

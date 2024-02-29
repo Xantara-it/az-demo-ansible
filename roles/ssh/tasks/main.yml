@@ -1,17 +1,17 @@
 ---
 - name: group ssh
-  group:
+  ansible.builtin.group:
     name: ssh
     state: present
 
 - name: admin user group ssh
-  user:
+  ansible.builtin.user:
     name: xantara
     groups: ssh
-    append: yes
+    append: true
 
 - name: /etc/ssh/sshd_config
-  template:
+  ansible.builtin.template:
     src: sshd_config.j2
     dest: /etc/ssh/sshd_config
     owner: root
@@ -21,7 +21,7 @@
     - restart sshd
 
 - name: add ssh to firewall
-  firewalld:
+  ansible.posix.firewalld:
     port: "22/tcp"
     state: enabled
     immediate: true

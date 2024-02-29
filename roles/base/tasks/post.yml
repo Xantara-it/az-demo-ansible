@@ -1,7 +1,7 @@
 ---
 - name: cleanup package cache
   tags: always
-  dnf:
+  ansible.builtin.dnf:
     autoremove: true
   changed_when: false
   when: ansible_distribution == "RedHat"

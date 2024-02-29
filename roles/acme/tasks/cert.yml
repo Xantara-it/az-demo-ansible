@@ -11,17 +11,18 @@
     path: "{{ cert_crt }}"
   register: acme_crt_st
 - block:
-  - ansible.builtin.command:
-      cmd: acme-tiny --account-key {{ account_key }} --csr {{ cert_csr }} --acme-dir {{ wwwroot }} --directory-url {{ acme_dir }}
-    register: acme_crt
-  - ansible.builtin.copy:
-      dest: "{{ cert_crt }}"
-      content: "{{ acme_crt.stdout }}"
-      mode: 0755
+    - ansible.builtin.command:
+        cmd: acme-tiny --account-key {{ acme_account_key }} --csr {{ cert_csr }} --acme-dir {{ wwwroot }} --directory-url {{ acme_dir }}
+      register: acme_crt
+      changed_when: false
+    - ansible.builtin.copy:
+        dest: "{{ cert_crt }}"
+        content: "{{ acme_crt.stdout }}"
+        mode: '0755'
   when: not acme_crt_st.stat.exists
 
 - ansible.builtin.template:
     src: ssl.conf.j2
     dest: /etc/httpd/conf.d/ssl-{{ cert }}.conf
-    mode: 0755
+    mode: '0755'
   notify: restart httpd

@@ -27,5 +27,5 @@
 # Timezone
 #
 - name: community.general.timezone
-  timezone:
+  community.general.timezone:
     name: Europe/Amsterdam

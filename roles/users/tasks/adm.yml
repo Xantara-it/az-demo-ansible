@@ -1,17 +1,14 @@
 ---
-- name: adm - group
-  group:
+- ansible.builtin.group:
     name: adm
     state: present
 
-- name: adm - user xantara
-  user:
+- ansible.builtin.user:
     name: xantara
     groups: adm
-    append: yes
+    append: true
 
-- name: adm - /etc/sudoers.d/adm
-  template:
+- ansible.builtin.template:
     src: sudo_adm.j2
     dest: /etc/sudoers.d/adm
     owner: root

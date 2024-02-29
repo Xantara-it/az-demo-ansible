@@ -1,12 +1,12 @@
 ---
 - name: package podman
-  package:
+  ansible.builtin.package:
     name: podman
     state: present
 
 # ToDo: check ik this is needed
 - name: /etc/containers/registries.conf
-  template:
+  ansible.builtin.template:
     src: registries.conf.j2
     dest: /etc/containers/registries.conf
     owner: root
@@ -24,7 +24,7 @@
     image: postgres:15.2
     state: started
     shm_size: 256m
-    rm : true
+    rm: true
     ports:
       - 5432:5432
     env:

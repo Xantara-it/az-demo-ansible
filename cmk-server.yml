@@ -3,7 +3,7 @@
   hosts: checkmk-server
   become: true
   pre_tasks:
-    - ansible.builtin.command: yum update -y
+    - ansible.builtin.include_role: { name: base, tasks_from: pre }
   tasks:
     - ansible.builtin.slurp:
         src: "/opt/omd/sites/{{ checkmk_site }}/var/check_mk/web/automation/automation.secret"
@@ -22,21 +22,25 @@
 
               main(*sys.argv[1:])
             dest: /tmp/cert.py
+            mode: '0644'
         - ansible.builtin.command: ~/bin/python3 /tmp/cert.py
-          become: yes
-          become_method: su
+          become: true
+          become_method: ansible.builtin.su
           become_exe: sudo su -
           become_user: "{{ checkmk_site }}"
+          changed_when: false
         - ansible.builtin.file:
             state: directory
             dest: "{{ checkmk_wato }}"
             owner: "{{ checkmk_site }}"
             group: "{{ checkmk_site }}"
+            mode: '0755'
         - ansible.builtin.template:
             src: user_connections.mk.j2
             dest: "{{ checkmk_wato }}/user_connections.mk"
             owner: "{{ checkmk_site }}"
             group: "{{ checkmk_site }}"
+            mode: '0644'
       tags: [checkmk.saml]
       vars:
         checkmk_conns:
@@ -49,12 +53,12 @@
         checkmk_saml_entity: "{{ checkmk_saml_base }}/saml_metadata.py?RelayState=google-fokkema"
         checkmk_saml_meta: "{{ checkmk_saml_base }}/saml_metadata.py"
         checkmk_wato: "/opt/omd/sites/{{ checkmk_site }}/etc/check_mk/multisite.d/wato"
-    - import_tasks: cmk-postgres.yaml
+    - ansible.builtin.import_tasks: cmk-postgres.yaml
       tags: [postgres]
       vars:
         checkmk_agent_secret: "{{ secret['content'] | b64decode | trim }}"
   roles:
-    - tribe29.checkmk.server
+    - checkmk.general.server
   tags:
     - server
   vars:
@@ -77,7 +81,7 @@
       register: secret
       tags: [always]
   roles:
-    - tribe29.checkmk.agent
+    - checkmk.general.agent
   tags:
     - agent
   vars:

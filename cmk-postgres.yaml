@@ -1,6 +1,6 @@
 ---
 - name: "Agent - Create rules."
-  tribe29.checkmk.rule:
+  checkmk.general.rule:
     server_url: "{{ checkmk_server_url }}"
     site: "{{ checkmk_site }}"
     automation_user: automation
@@ -20,7 +20,7 @@
     state: present
   run_once: true
 - name: "Agent - Activate rules."
-  tribe29.checkmk.activation:
+  checkmk.general.activation:
     server_url: "{{ checkmk_server_url }}"
     site: "{{ checkmk_site }}"
     automation_user: automation
@@ -30,11 +30,10 @@
       - "{{ checkmk_site }}"
   run_once: true
 - name: "Agent - Bake"
-  bake:
+  checkmk.general.bakery:
     server_url: "{{ checkmk_server_url }}"
     site: "{{ checkmk_site }}"
     automation_user: automation
     automation_secret: "{{ checkmk_agent_secret }}"
-    sites:
-      - "{{ checkmk_site }}"
+    state: baked
   run_once: true
