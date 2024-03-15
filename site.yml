@@ -8,10 +8,14 @@
     - ansible.builtin.include_role: { name: base, tasks_from: post }
   roles:
     - base
-    - acme
     - ssh
     - users
-    - podman
+    # - podman
+
+- hosts: checkmk-server
+  become: true
+  roles:
+    - acme
   vars:
     certs:
       demo.xantara-it.nl: []

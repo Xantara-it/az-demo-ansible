@@ -12,7 +12,7 @@
   register: acme_crt_st
 - block:
     - ansible.builtin.command:
-        cmd: acme-tiny --account-key {{ acme_account_key }} --csr {{ cert_csr }} --acme-dir {{ wwwroot }} --directory-url {{ acme_dir }}
+        cmd: acme-tiny --account-key {{ acme_account_key }} --acme-dir {{ acme_wwwroot }} --directory-url {{ acme_dir }} --csr {{ cert_csr }}
       register: acme_crt
       changed_when: false
     - ansible.builtin.copy:

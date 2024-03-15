@@ -23,8 +23,8 @@ user_connections += [
   'user_alias_attribute_name': '',
   'email_attribute_name': '',
   'contactgroups_mapping': 'no_mapping',
-  'role_membership_mapping': False,
-  'signature_certificate': 'builtin'
+  'role_membership_mapping': (True, ('groups', {'user': ['cmk-user'], 'admin': ['cmk-admin']})),
+  'signature_certificate': 'builtin',
 {{ '}' }},
 {% endfor %}
 ]
